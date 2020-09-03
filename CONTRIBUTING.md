@@ -16,12 +16,14 @@ TODO
 
 # Workflow
 
-## step 1: Fork in the cloud
+## Setup process
+
+### step 1: Fork in the cloud
 
 1. Visit https://github.com/finogeeks/FinChat-Web
 2. On the top right of the page, click the `Fork` button (top right) to create a cloud-based fork of the repository.
 
-## step 2: Clone fork to local storage
+### step 2: Clone fork to local storage
 
 ```sh
 mkdir -p $working_dir
@@ -33,41 +35,45 @@ cd $working_dir/FinChat-Web
 git remote add upstream https://github.com/finogeeks/FinChat-Web.git
 # or: git remote add upstream git@github.com:finogeeks/FinChat-Web.git
 
-# Never push to the upstream master.
-git remote set-url --push upstream no_push
-
 # Confirm that your remotes make sense:
 # It should look like:
 # origin    git@github.com:$(user)/FinChat-Web.git (fetch)
 # origin    git@github.com:$(user)/FinChat-Web.git (push)
 # upstream  https://github.com/finogeeks/FinChat-Web (fetch)
-# upstream  no_push (push)
+# upstream  https://github.com/finogeeks/FinChat-Web (push)
 git remote -v
 ```
 
-## step 3: Branch
+## Develop process
+
+The overview of develop process is as follows:
+
+<img src="docs/dev/git/contribution_dev_process.jpg" alt="develop process" width="650px">
+
+### step 1: Branch
 
 ```sh
 cd $working_dir/FinChat-Web
+# Keep your branch in sync
 git fetch upstream
-
-# Base your changes on the develop branch.
-git checkout -b develop
+git checkout develop
 git rebase upstream/develop
 ```
 
 Branch from develop:
 
 ```sh
-git checkout -b myfeature
+git checkout -b my_feature
 ```
 
-## Step 4: Develop
-### Edit the code
+### Step 2: Develop
 
-You can now edit the code on the `myfeature` branch.
+#### Edit the code
 
-### Build && Run FinChat-Web
+You can now edit the code on the `my_feature` branch.
+
+#### Build && Run FinChat-Web
+
 ```sh
 # Project setup
 yarn install
@@ -78,10 +84,10 @@ yarn run serve
 # Compiles and minifies for production
 yarn run build
 ```
-### Test
+
+#### Test
 
 ```sh
-
 # Run your tests
 yarn run test
 
@@ -92,7 +98,18 @@ yarn run lint
 # See https://cli.vuejs.org/config/
 ```
 
-## Step 5: Keep your branch in sync
+#### commit
+
+Commit your changes.
+
+```sh
+git commit
+```
+
+Likely you'll go back and edit/build/test further, and then `commit --amend` in a
+few cycles.
+
+### Step 3: Keep your branch in sync
 
 ```sh
 # While on your myfeature branch.
@@ -106,33 +123,23 @@ and violate the principle that commits ought to be individually understandable
 and useful (see below). You can also consider changing your `.git/config` file
 via `git config branch.autoSetupRebase` always to change the behavior of `git pull`.
 
-## Step 6: Commit
-
-Commit your changes.
-
-```sh
-git commit
-```
-
-Likely you'll go back and edit/build/test further, and then `commit --amend` in a
-few cycles.
-
-## Step 7: Push
+### Step 4: Push
 
 When the changes are ready to review (or you just to create an offsite backup
 or your work), push your branch to your fork on `github.com`:
 
 ```sh
-git push --set-upstream ${your_remote_name} myfeature
+git push origin my_feature
+# or: git push --set-upstream ${your_remote_name} my_feature
 ```
 
-## Step 8: Create a pull request
+### Step 5: Create a pull request
 
 1. Visit your fork at `https://github.com/$user/FinChat-Web`.
-2. Click the `Compare & Pull Request` button next to your `myfeature` branch.
+2. Click the `Compare & Pull Request` button next to your `my_feature` branch.
 3. Fill in the required information in the PR template.
 
-### Get a code review
+#### Get a code review
 
 If your pull request (PR) is opened, it will be assigned to one or more
 reviewers. Those reviewers will do a thorough code review, looking at
@@ -141,3 +148,7 @@ and style.
 
 To address review comments, you should commit the changes to the same branch of
 the PR on your fork
+
+# Notes for maintainers on merging PRs etc
+
+There are some notes for those with commit access to the project on how we manage git [here](docs/dev/git/git.md).
