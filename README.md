@@ -1,29 +1,15 @@
-# finchat-web
+# Introduction
 
-## Project setup
-```
-yarn install
-```
+TODO
 
-### Compiles and hot-reloads for development
-```
-yarn run serve
-```
+# Contributing
 
-### Compiles and minifies for production
-```
-yarn run build
-```
+Read the [CONTRIBUTING](./CONTRIBUTING.md)
 
-### Run your tests
-```
-yarn run test
-```
+# Troubleshooting
 
-### Lints and fixes files
-```
-yarn run lint
-```
+TODO
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+# Support channels
+
+TODO
