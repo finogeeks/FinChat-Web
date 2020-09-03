@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="7px" height="9px" viewBox="0 0 7 9" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>ic_arrow</title>
+    <desc>Created with Sketch.</desc>
+    <g id="FC" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="1-1-1-聊天页面" transform="translate(-262.000000, -71.000000)" fill="#9A9EA5">
+            <g id="侧边栏" transform="translate(94.000000, 40.000000)">
+                <g id="用户信息" transform="translate(1.000000, 0.000000)">
+                    <path d="M171.496263,33.0052894 L172.243412,38.6824461 C172.279443,38.9562277 172.086709,39.2073807 171.812927,39.2434121 C171.76962,39.2491115 171.725753,39.2491115 171.682446,39.2434121 L166.005289,38.4962633 C165.731508,38.460232 165.538773,38.209079 165.574805,37.9352974 C165.589167,37.8261635 165.639142,37.7248192 165.716977,37.6469845 L170.646985,32.7169765 C170.842247,32.5217144 171.158829,32.5217144 171.354091,32.7169765 C171.431926,32.7948112 171.481901,32.8961555 171.496263,33.0052894 Z" id="ic_arrow" transform="translate(168.664214, 35.664214) scale(-1, 1) rotate(135.000000) translate(-168.664214, -35.664214) "></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

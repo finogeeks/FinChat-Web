@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>ic_input_emoji_unselected</title>
+    <desc>Created with Sketch.</desc>
+    <g id="FC" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="1-1-1-聊天页面" transform="translate(-354.000000, -480.000000)" fill="#B3C1D5" fill-rule="nonzero">
+            <g id="输入框" transform="translate(334.000000, 466.000000)">
+                <g id="Group-11" transform="translate(20.000000, 14.000000)">
+                    <g id="分组-6">
+                        <path d="M9,0 C4.05,0 0,4.05 0,9 C0,13.95 4.05,18 9,18 C13.95,18 18,13.95 18,9 C18,4.05 13.95,0 9,0 Z M9,16.56 C4.77,16.56 1.44,13.14 1.44,9 C1.44,4.86 4.77,1.44 9,1.44 C13.23,1.44 16.56,4.86 16.56,9 C16.56,9 16.56,9 16.56,9 C16.56,13.23 13.23,16.56 9,16.56 C9,16.56 9,16.56 9,16.56 Z M5.04,6.57 C5.04,7.11 5.49,7.65 6.12,7.65 C6.75,7.65 7.2,7.2 7.2,6.57 C7.2,5.94 6.66,5.49 6.12,5.49 C6.12,5.49 6.12,5.49 6.12,5.49 C5.49,5.49 5.04,5.94 5.04,6.57 Z M10.89,6.57 C10.89,7.11 11.34,7.65 11.97,7.65 C12.6,7.65 13.05,7.2 13.05,6.57 C13.05,5.94 12.6,5.49 11.97,5.49 C11.97,5.49 11.97,5.49 11.97,5.49 C11.43,5.49 10.89,5.94 10.89,6.57 Z M4.77,10.35 C4.77,12.69 6.66,14.58 9,14.58 C11.34,14.58 13.23,12.69 13.23,10.35 L4.77,10.35 Z" id="ic_input_emoji_unselected"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

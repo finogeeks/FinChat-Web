@@ -1,0 +1,108 @@
+clone:
+  git:
+    image: plugins/git
+    tags: true
+
+pipeline:
+  # build:
+  #   image: docker.finogeeks.club/base/node-base:10
+  #   pull: true
+  #   secrets:
+  #     - NPM_TOKEN
+  #   commands:
+  #     - echo //mirrors.finogeeks.club/repository/npm/:_authToken=$${NPM_TOKEN} >> .npmrc
+  #     - echo "deb http://mirrors.aliyun.com/debian stretch main contrib non-free" > /etc/apt/sources.list
+  #     - apt-get update && apt-get -y install zip
+  #     - npm i yarn -g
+  #     - yarn
+  
+  #     - yarn build
+  #     - bash publish.sh
+  #   when:
+  #     branch: master
+  build:
+    image: docker.finogeeks.club/public/node:10.5
+    pull: true
+    secrets:
+      - NPM_TOKEN
+    commands:
+      - echo //mirrors.finogeeks.club/repository/npm/:_authToken=$${NPM_TOKEN} >> .npmrc
+      # - npm login --registry=https://mirrors.finogeeks.club/repository/npm/
+      # - yarn login
+      # - yarn
+      # - yarn build
+  docker_latest:
+    image: docker.finogeeks.club/drone/docker
+    repo:  docker.finogeeks.club/finochat/finchat-web
+    dockerfile: Dockerfile
+    when:
+      event: [push,pull_request]
+  docker_tag:
+    image: docker.finogeeks.club/drone/docker
+    repo: docker.finogeeks.club/finochat/finchat-web
+    dockerfile: Dockerfile
+    default_tags: true
+    when:
+      branch: master
+      event: [tag]
+  deploy:
+
+    image: docker.finogeeks.club/test/drone-k8s-deploy:0.0.14
+
+    when:
+
+      event: [ push, tag ]
+
+    secrets:
+
+      - source: K8S_TOKEN
+
+        target: K8S_TOKEN
+
+    environment:
+
+      - K8S_SERVER=https://10.104.27.70:6443
+
+      - K8S_NAMESPACE=platform
+
+      - K8S_USER=admin
+
+      - K8S_CLUSTER_NAME=k8s-dev
+
+      - REPO=docker.finogeeks.club/finochat/finchat-web
+
+      - TAG=${DRONE_TAG}
+
+      - CONTAINER=finchat-web
+
+      - DEPLOYMENTS=finchat-web
+
+      - DEBUG=true
+  fichat_notice:
+
+    image: docker.finogeeks.club/base/finchat_notice:1.0.2
+
+    commands: /finchat_notice.py
+
+    when:
+      status: [failure]
+
+    environment:
+
+      - debug=true
+
+      - FINOCHAT_ROOMID=!213824737258766336:finogeeks.club
+
+      - FINCHAT_URL=https://api.finogeeks.club
+
+      - f_DRONE_BUILD_LINK=true
+
+      - f_DRONE_COMMIT_LINK=true
+
+      - f_DRONE_COMMIT_AUTHOR_EMAIL=true
+
+      - f_DRONE_COMMIT_MESSAGE=true
+
+      - f_DRONE_REPO_OWNER=true
+
+      - f_DRONE_BUILD_STATUS=true
