@@ -1,0 +1,12 @@
+
+
+server {
+  listen ${NGINX_PORT};
+  listen [::]:${NGINX_PORT};
+
+  location / {
+    root /app;
+    expires -1;
+  }
+  
+}
