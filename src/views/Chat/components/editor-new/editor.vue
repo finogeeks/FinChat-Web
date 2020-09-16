@@ -127,9 +127,7 @@ export default {
     members: {
       type: Array,
       required: true,
-      default: () => {
-        return [];
-      },
+      default: () => [],
     },
     emojiPickerDir: {
       type: String,
@@ -144,7 +142,7 @@ export default {
     return {
       focuseNode: null,
       canSend: true,
-      DEFAULT_AVATAR: require("@/assets/images/default__avatar.png"),
+      DEFAULT_AVATAR: require('@/assets/images/default__avatar.png'),
       agentJudge,
     };
   },
@@ -163,7 +161,7 @@ export default {
         setTimeout(() => {
           this.canSend = true;
           console.log(this.canSend);
-        },150)
+        }, 150);
       } else {
         this.canSend = true;
         console.log(this.canSend);
@@ -191,7 +189,7 @@ export default {
       // console.log(this.$refs.editor.lastChild);
       // var range = this.$refs.editor.children[this.$refs.editor.children.length - 2].createTextRange();  // 创建文本区域对象
 
-      // range.moveEnd("character",2);  
+      // range.moveEnd("character",2);
       // select.collapse(this.$refs.editor, 2);
       // this.$nextTick(() => {
       const range = document.createRange();
@@ -231,10 +229,10 @@ export default {
       if (!this.isCursorInEditor()) return;
       const msgBody = this.parseContent();
       if (!msgBody.body) return;
-      // eventBridge.proxy.sendMessage(this.roomEntity.roomId, msgBody);
-      const response = await window.matrix.mxClient.sendMessage(this.roomEntity.roomId, msgBody);
       const editorNode = document.getElementById(`editor-${this.roomEntity.roomId.replace(/!|:|\./g, '')}`);
       editorNode.innerText = '';
+      // eventBridge.proxy.sendMessage(this.roomEntity.roomId, msgBody);
+      const response = await window.matrix.mxClient.sendMessage(this.roomEntity.roomId, msgBody);
       this.focus();
     },
     replaceText(innerHTML) {
@@ -265,7 +263,7 @@ export default {
       // console.log('this.atFilter', this.atFilter);
       // TODO 增加拼音支持
       const atList = [...this.members];
-      const res = atList.filter(item => {
+      const res = atList.filter((item) => {
         item.avatarUrl = item.avatarUrl ? this.mxcTransfer(item) : '';
         return ((item.name.indexOf(this.atFilter || '') > -1) && item.userId !== this.myId && item.membership === 'join') || item.userId === '@all';
       });
@@ -296,12 +294,12 @@ export default {
   },
 
   watch: {
-    'roomEntity.roomId'(val) {
+    'roomEntity.roomId': function (val) {
       // console.log('roomEntity.roomId', val);
       // this.ifShowAtList = false;
       this.closeAtList();
     },
-  }
+  },
 };
 </script>
 

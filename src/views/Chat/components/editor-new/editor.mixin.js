@@ -241,7 +241,7 @@ export default {
       // }
       if (e.keyCode === 8) {
         const editorNode = document.getElementById(`editor-${this.roomEntity.roomId.replace(/!|:|\./g, '')}`);
-        let str = editorNode.innerHTML;
+        const str = editorNode.innerHTML;
         if (str === '<br>') {
           editorNode.innerHTML = '';
         }
@@ -294,8 +294,6 @@ export default {
         }
       }
       if (e.key === 'Enter') {
-        console.log(`e.key === 'Enter'`);
-        console.log(this.canSend);
         e.preventDefault();
         if (!this.canSend) return;
         if (e.ctrlKey || e.metaKey || e.altKey) {
@@ -332,7 +330,8 @@ export default {
             this.$Message.error('消息过长，无法粘贴');
             return;
           }
-          document.execCommand('insertHTML', false, emojione.unicodeToImage(plainText.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\r\n/g, '<br>').replace(/\n/g, '<br>').replace(/ /g, '&nbsp;')));
+          document.execCommand('insertHTML', false, emojione.unicodeToImage(plainText.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\r\n/g, '<br>').replace(/\n/g, '<br>')
+            .replace(/ /g, '&nbsp;')));
         } else if (clipboardData.types.indexOf('Files') > -1) {
           const file = clipboardData.files[0];
           this.handleUpload([file]);
@@ -359,7 +358,7 @@ export default {
     originContent() {
       if (!this.roomEntity.roomId) return '';
       const editorNode = document.getElementById(`editor-${this.roomEntity.roomId.replace(/!|:|\./g, '')}`);
-      let str = editorNode.innerHTML;
+      const str = editorNode.innerHTML;
       return str;
     },
     parseContent() {
@@ -490,14 +489,14 @@ export default {
       const tempnode = document.createElement('span');
       tempnode.innerHTML = innerHtml;
       const content = (selection.anchorNode && selection.anchorNode.textContent) || '';
-      console.log('content: ',content);
+      console.log('content: ', content);
       const range = selection.getRangeAt(0);
       console.log('range: ', range);
       let endIndex = range.endOffset;
       console.log('endIndex: ', endIndex);
       const atIndex = content.lastIndexOf('@', endIndex - 1);
       endIndex = atIndex + 1;
-      console.log('atIndex, endIndex : ',atIndex, endIndex);
+      console.log('atIndex, endIndex : ', atIndex, endIndex);
       if (atIndex > -1) range.setStart(selection.anchorNode, atIndex);
       if (atIndex > -1) range.setEnd(selection.anchorNode, endIndex);
       console.log('range: ', range);
