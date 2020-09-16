@@ -174,7 +174,7 @@ export default {
       });
       const titles = document.getElementsByTagName('title');
       Array.prototype.filter.call(titles, (e) => {
-        e.innerHTML = signal ? WEB_NAME : `${WEB_NAME}(${this.hasUnread})`;
+        e.innerHTML = signal ? WEB_NAME : `(${this.hasUnread})${WEB_NAME}`;
       });
     },
     async enterRoom(room) {
