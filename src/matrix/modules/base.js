@@ -1,6 +1,6 @@
 import emojione from 'emojione';
 import moment from 'moment';
-import sdk from '@finogeeks/matrix-js-sdk';
+import sdk, { FinChatNormal, FinChatNetDisk, EventStatus } from '@finogeeks/matrix-js-sdk';
 import emitter from '@/utils/event-emitter';
 import { last as _last, cloneDeep } from 'lodash';
 import { Message } from '@finogeeks/finchat-model';
@@ -11,8 +11,8 @@ import {
   FILTER_DEFINITION,
 } from '../config';
 import vuex from '@/store';
-import { FinChatNormal, FinChatNetDisk, EventStatus } from '@finogeeks/matrix-js-sdk';
-import {ChannelService} from '@/utils/channel';
+
+import { ChannelService } from '@/utils/channel';
 import { IAM_INFO_KEY, BASE_URL, RoomType } from '@/commonVariable';
 
 export default class BaseModule {
@@ -28,7 +28,7 @@ export default class BaseModule {
     this.$fcChannel = new ChannelService();
     const myinfo = JSON.parse(window.localStorage.getItem(IAM_INFO_KEY));
     this.$fcChannel.init(
-      '', 
+      '',
       myinfo.user_id,
       myinfo.jwt,
       myinfo.access_token,
@@ -88,7 +88,16 @@ export default class BaseModule {
     const joinRule = (joinRuleEvent && joinRuleEvent.event && joinRuleEvent.event.content && joinRuleEvent.event.content.join_rule) ? joinRuleEvent.event.content.join_rule : 'invite';
     const isBan = power && power.default === 100 && powerLevel !== 100;
     const originalName = (nameEvent && nameEvent.event.content.name) || '';
-    const isMute = (roomRule && roomRule.enabled && roomRule.actions.length === 1 && roomRule.actions[0] === 'dont_notify') ? 1 : 0;
+    // 新增新的静音状态字段
+    let muteStatus = 'default';
+    if (roomRule && roomRule.enabled && roomRule.actions.length) {
+      const { actions = [] } = roomRule;
+      if (actions.indexOf('dont_notify') > -1) muteStatus = 'mute';
+      if (actions.indexOf('prohibit_notify') > -1) muteStatus = 'prohibit';
+      if (actions.indexOf('fold_notify') > -1) muteStatus = 'fold_mute';
+    }
+    const isMute = muteStatus !== 'default';
+    // const isMute = (roomRule && roomRule.enabled && roomRule.actions.length === 1 && roomRule.actions[0] === 'dont_notify') ? 1 : 0;
     let isDelete = mxRoom.tags.delete ? 1 : 0;
     const isHide = mxRoom.tags.hide ? 1 : 0;
 
@@ -140,18 +149,60 @@ export default class BaseModule {
         isPrivateChannel = res.data.preset === 'private_chat';
       }
     }
-    const {roomType} = this.getRoomMeta(mxRoom);
-    return { roomId, roomType, isDirect, isBot, name, membership, members, groupAvatars, isMute, isDelete, isHide, isSecret, isEncryped, isChannel, isPrivateChannel, isArchiveChannel, isServiceRoom, isServiceClosed, enableForward, enableFavorite, enableSnapshot, enableWatermark, roomTopic, unread, highlight, powerLevel, avatar, historyVisibility, isTop, lastUpdateTime, createTime, createrId, typingCount, power, lastMessage, draftMessage, joinRule, isBan, totlaunread, highlightunread };
+    const { roomType } = this.getRoomMeta(mxRoom);
+    return {
+      roomId,
+      roomType,
+      isDirect,
+      isBot,
+      name,
+      membership,
+      members,
+      groupAvatars,
+      isMute,
+      isDelete,
+      isHide,
+      isSecret,
+      isEncryped,
+      isChannel,
+      isPrivateChannel,
+      isArchiveChannel,
+      isServiceRoom,
+      isServiceClosed,
+      enableForward,
+      enableFavorite,
+      enableSnapshot,
+      enableWatermark,
+      roomTopic,
+      unread,
+      highlight,
+      powerLevel,
+      avatar,
+      historyVisibility,
+      isTop,
+      lastUpdateTime,
+      createTime,
+      createrId,
+      typingCount,
+      power,
+      lastMessage,
+      draftMessage,
+      joinRule,
+      isBan,
+      totlaunread,
+      highlightunread,
+      muteStatus,
+    };
   }
 
   getRoomMeta(mxRoom) {
-    const roomState = mxRoom.currentState
-    const topicEvent = roomState.getStateEvents('m.room.topic', '')
+    const roomState = mxRoom.currentState;
+    const topicEvent = roomState.getStateEvents('m.room.topic', '');
     let topicData = null;
-    let originTopicData = topicEvent ? topicEvent.event.content.topic : '';
+    const originTopicData = topicEvent ? topicEvent.event.content.topic : '';
     try {
       if (typeof originTopicData === 'string') {
-        topicData = JSON.parse(originTopicData)
+        topicData = JSON.parse(originTopicData);
       } else {
         topicData = originTopicData;
       }
@@ -257,7 +308,7 @@ export default class BaseModule {
       const userSession = JSON.parse(localStorage.getItem('Model:iam-info'));
       // // console.log(JSON.parse(userSession));
       // url = this.mxClient.mxcUrlToHttp(trimUrl);
-      url = `${this.baseUrl}/api/v1/netdisk/download/${mxcUrl}?access_token=${userSession.access_token}&jwt=${userSession.jwt}`
+      url = `${this.baseUrl}/api/v1/netdisk/download/${mxcUrl}?access_token=${userSession.access_token}&jwt=${userSession.jwt}`;
       // url = url.replace(/\/\//g, '/')
     } else {
       // console.log('getThumbnailUrl');
@@ -528,7 +579,7 @@ export default class BaseModule {
     const { content: oriContent, event_id, origin_server_ts, room_id, type, user_id, state_key } = messageEvent.event; // eslint-disable-line
     // content.users = oriContent.users;
     return {
-      content: Object.assign({}, oriContent, content ),
+      content: Object.assign({}, oriContent, content),
       eventId: event_id,
       time: origin_server_ts,
       roomId: room_id,
@@ -651,7 +702,7 @@ export default class BaseModule {
         msgType,
         msgTypeInfo,
         sender: user.displayName,
-        msgBody: msgBody,
+        msgBody,
         eventId,
         status,
         eventTime,
@@ -720,21 +771,21 @@ export default class BaseModule {
     res = res.replace(/\$\{(.*?)\}/g, (userId, pureId) => {
       const user = this.mxClient.getUser(pureId) || {};
       return user.displayName;
-    })
+    });
     return res;
   }
 
   buildRoomMember(mxMember) {
     if (!mxMember || !mxMember.userId) {
       // console.log('!mxMember');
-      return null
-    };
+      return null;
+    }
     const mxUser = this.mxClient.getUser(mxMember && mxMember.userId);
     if (!mxUser) {
       // console.log('!mxUser');
       // console.log(mxMember.userId);
-      return null
-    };
+      return null;
+    }
     return {
       userId: mxMember.userId,
       membership: mxMember.membership,

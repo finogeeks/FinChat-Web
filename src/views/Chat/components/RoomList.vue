@@ -63,15 +63,11 @@
                     </div>
                   </div>
                   <div class="room-tip">
-                    <div v-if="item.isMute" style="display: flex;align-items: center;">
+                    <div v-if="item.isMute && !item.unread" style="display: flex;align-items: center;">
                       <img src="@/assets/images/ic_mute.svg" alt="">
                     </div>
-                    <div v-if="item.isMute && item.unread" class="mute-unread">
-                        
-                    </div>
-                    <div v-if="!item.isMute && item.unread" class="unread">
-                      {{item.unread}}
-                    </div>
+                    <div v-else-if="item.isMute && item.unread" class="mute-unread"></div>
+                    <div v-if="!item.isMute && item.unread" class="unread">{{item.unread}}</div>
                   </div>
               </div>
             </div>
