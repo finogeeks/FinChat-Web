@@ -315,16 +315,17 @@ export default {
       // console.log(this.roomJumpUrl);
     },
     async computeUnread() {
-      if (this.viewingRoom.unread > 9) {
-        this.showRoomUpBtn = this.viewingRoom.unread;
-        const message = await window.matrix.viewingRoom.getTimelineMsg(
-          this.viewingRoomId,
-          this.roomTimeLine[this.roomTimeLine.length - 1].eventId,
-          'BACKWORDS',
-          this.viewingRoom.unread,
-        );
-        this.$store.commit('loadMoreTimeline', { message, roomId: this.viewingRoomId });
-      }
+      // 去除未读加载相关
+      // if (this.viewingRoom.unread > 9) {
+      //   this.showRoomUpBtn = this.viewingRoom.unread;
+      //   const message = await window.matrix.viewingRoom.getTimelineMsg(
+      //     this.viewingRoomId,
+      //     this.roomTimeLine[this.roomTimeLine.length - 1].eventId,
+      //     'BACKWORDS',
+      //     this.viewingRoom.unread,
+      //   );
+      //   this.$store.commit('loadMoreTimeline', { message, roomId: this.viewingRoomId });
+      // }
     },
     scrollUp() {
       const listComp = this.$refs.records;
@@ -365,10 +366,10 @@ export default {
         this.$refs.editor.replaceText(this.viewingRoom.roomEditingMsg);
       }
     },
-    saveEditingMsg() {
+    saveEditingMsg(room) {
       // this.viewingRoom.roomEditingMsg = this.editingMsg;
       this.viewingRoom.roomEditingMsg = this.$refs.editor.originContent();
-      this.$store.commit('updateRoomList', null);
+      this.$store.commit('updateRoomList', { ...room, unread: 0 });
     },
     saveOldEditMsg() {
       this.oldEditingMsg = this.$refs.editor.originContent();

@@ -244,7 +244,6 @@ export default {
     roomList() {
       console.log('VUEX STORE: roomList');
       const roomList = this.$store.state.roomList.filter(e => !e.isDelete);
-      console.log(roomList);
       const roomListContainer = this.$refs.roomListContainer;
       if (this.roomListDraging) {
         const scrollTop = roomListContainer.scrollTop;

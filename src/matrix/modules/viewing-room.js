@@ -76,8 +76,8 @@ export default class ViewingRoomModule extends BaseModule {
         // console.log('paginateDir', num);
         if (num > 30) {
           // 貌似后台接口有变，这里超过30获取不到，但可以分批获取
-          const count = Math.ceil(num/30);
-          for (let i = 0 ; i < count ; i ++) {
+          const count = Math.ceil(num / 30);
+          for (let i = 0; i < count; i++) {
             // console.log('~~~~~~~timelineWindow.paginate~~~~~~~', count, i);
             await timelineWindow.paginate(paginateDir, 30);
           }
@@ -152,7 +152,7 @@ export default class ViewingRoomModule extends BaseModule {
   }
 
   addPendingMsg(roomId, content) {
-    
+
   }
 
   updatePendingMsg(roomId, payload) {

@@ -24,13 +24,13 @@
 <script lang="js">
 import emitter from '@/utils/event-emitter';
 import { mapState } from 'vuex';
+import IAM from '@/model/iam.js';
 // import RoomList from './components/RoomList.vue';
 const RoomList = () => import('./components/RoomList.vue');
 // import ViewingRoom from './components/ViewingRoom.vue';
 const ViewingRoom = () => import('./components/ViewingRoom.vue');
 // import JoinRoom from './components/JoinRoom.vue';
 const JoinRoom = () => import('./components/JoinRoom.vue');
-import IAM from '@/model/iam.js';
 
 export default {
   beforeRouteEnter(to, from, next) {
@@ -42,7 +42,7 @@ export default {
     'join-room': JoinRoom,
   },
   created() {
-    
+
   },
   data() {
     return {
@@ -66,7 +66,7 @@ export default {
       } else {
         this.showLinkRoom = true;
       }
-    }
+    };
     if (this.chatRoom) {
       if (this.roomsInited) {
         enterRoom();
@@ -78,7 +78,7 @@ export default {
           }
         }, 500);
       }
-    };
+    }
   },
   methods: {
     dragBegin() {
@@ -98,42 +98,44 @@ export default {
       this.mouseMoveX += e.movementX;
       if (this.timer) return;
       this.timer = setTimeout(() => {
-        this.$store.commit('setRoomListWidth', this.roomListWidth+this.mouseMoveX);
+        this.$store.commit('setRoomListWidth', this.roomListWidth + this.mouseMoveX);
         clearTimeout(this.timer);
         this.timer = null;
         this.mouseMoveX = 0;
-      }, 16)
+      }, 16);
     },
     afterEnterRoom() {
-        setTimeout(async () => {
-          await this.$refs.viewingRoom.computeUnread();
-          this.$refs.viewingRoom.scrollToBottom();
-        }, 0);
+      setTimeout(async () => {
+        await this.$refs.viewingRoom.computeUnread();
+      }, 0);
     },
     async enterRoom(room) {
-      this.$refs.viewingRoom && this.$refs.viewingRoom.saveEditingMsg();
+      this.$store.commit('setViewingRoom', room.roomId);
+      this.$refs.viewingRoom && this.$refs.viewingRoom.saveEditingMsg(room);
       const sameRoom = this.viewingRoomId === room.roomId;
       if (sameRoom) return;
       this.showLinkRoom = false;
       await window.matrix.viewingRoom.addViewingRoom(room.roomId);
+      console.log('1111');
       this.viewingRoomId = room.roomId;
       this.hasOldTimelineTable[this.viewingRoomId] = null;
-      this.afterEnterRoom();
+      // this.afterEnterRoom();
       this.$nextTick(() => {
         this.$refs.viewingRoom && this.$refs.viewingRoom.clearEditingMsg();
+        this.$refs.viewingRoom.scrollToBottom();
       });
     },
     whetherSameRoom(roomId) {
       return roomId === this.viewingRoomId;
     },
-  }, 
+  },
   computed: {
     ...mapState(['showRoomList', 'windowHeight', 'windowWidth', 'userList', 'myinfo', 'hasOldTimelineTable', 'chatRoom', 'roomsInited', 'roomListWidth']),
   },
   watch: {
-    
+
   },
-}
+};
 </script>
 
 <style lang="scss">

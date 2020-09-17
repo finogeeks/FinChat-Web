@@ -35,7 +35,7 @@
       <span v-if="loging">
         <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>Loging
       </span>
-      <span v-else>登陆</span>
+      <span v-else>登录</span>
       <div v-if="loging || cantLogin" @click.stop="" class="load-mask"></div>
     </Button>
     <div v-if="showSingUp" class="access-options">
@@ -52,7 +52,7 @@ import emitter from '@/utils/event-emitter';
 import { cloneDeep } from 'lodash';
 // const { login, startMatrix } = require('./utils.js');
 import { login, startMatrix } from '../../../utils.js';
-import { showSingUpHostname } from '@/jwtRefresh'
+import { showSingUpHostname } from '@/jwtRefresh';
 
 export default {
   beforeRouteEnter(to, from, next) {
@@ -66,14 +66,14 @@ export default {
       loging: false,
       cantLogin: true,
       showPass: true,
-      // login-登录页  register-注册页  userinfo-设置用户名和面   verifyphone-找回密码验证手机号  resetinfo-重置密码 
+      // login-登录页  register-注册页  userinfo-设置用户名和面   verifyphone-找回密码验证手机号  resetinfo-重置密码
       step: 'login',
       showSingUp: false,
     };
   },
   created() {
     if (showSingUpHostname.indexOf(window.location.hostname) > -1) {
-      this.showSingUp = true
+      this.showSingUp = true;
     }
   },
   async mounted() {
@@ -95,18 +95,18 @@ export default {
     handleInput() {
       // // console.log(this.password.indexOf(/[^/x00-/x80]/));
       // // console.log('handleInput');
-      this.password=this.checkStr(this.password);
+      this.password = this.checkStr(this.password);
     },
-    checkStr(str){ 
-      var temp="" 
-      for(var i=0;i<str.length;i++) 
-           if(str.charCodeAt(i)>0&&str.charCodeAt(i)<255) 
-              temp+=str.charAt(i) 
-      return temp 
+    checkStr(str) {
+      let temp = '';
+      for (let i = 0; i < str.length; i++) {
+        if (str.charCodeAt(i) > 0 && str.charCodeAt(i) < 255) { temp += str.charAt(i); }
+      }
+      return temp;
     },
     changeStep(step) {
-      this.$emit('changeStep', step)
-    }
+      this.$emit('changeStep', step);
+    },
   },
   watch: {
     userId() {
@@ -125,9 +125,9 @@ export default {
       if (this.userId && this.password) {
         this.cantLogin = false;
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
