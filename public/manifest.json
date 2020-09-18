@@ -1,6 +1,6 @@
 {
-  "name": "finchat-web",
-  "short_name": "finchat-web",
+  "name": "Finchat",
+  "short_name": "Finchat",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",

@@ -12,7 +12,7 @@ import emitter from '@/utils/event-emitter';
 import { cloneDeep } from 'lodash';
 import { IAM_INFO_KEY, BASE_URL, MSG_TYPE_ALERT, MSG_TYPE } from '@/commonVariable';
 import { mapState } from 'vuex';
-import {startJwtRefresh,stopJwtRefresh} from './jwtRefresh';
+import { startJwtRefresh, stopJwtRefresh } from './jwtRefresh';
 
 export default {
   beforeRouteEnter(to, from, next) {
@@ -22,7 +22,7 @@ export default {
   data() {
     return {
       timer: null,
-    }
+    };
   },
   created() {
     this.$store.commit('setWindowHeight', window.innerHeight);
@@ -40,12 +40,12 @@ export default {
     emitter.addListener('INIT_TIMELINE', (roomId, roomTimeLine) => {
       // console.log('INIT_TIMELINE');
       // console.log(roomId, roomTimeLine);
-      this.$store.commit('initRoomTimeline', {roomId, roomTimeLine: cloneDeep(roomTimeLine)});
-    })
+      this.$store.commit('initRoomTimeline', { roomId, roomTimeLine: cloneDeep(roomTimeLine) });
+    });
     emitter.addListener('TIMELINE_UPDATE', (message, roomId, mxEvent, mxRoom) => {
       // console.log('TIMELINE_UPDATE');
       // console.log(message);
-      this.$store.commit('updateRoomTimeline', {message: cloneDeep(message), roomId});
+      this.$store.commit('updateRoomTimeline', { message: cloneDeep(message), roomId });
     });
     emitter.addListener('ROOM_UPDATE', (newRoom) => {
       // console.log('ROOM_UPDATE');
@@ -77,13 +77,13 @@ export default {
           await Notification.requestPermission();
         }
         const iconurl = window.matrix.user.mxcTransfer((sender && sender.avatarUrl) || '');
-        var notification = new Notification(newRoom.name, {
-            dir: "auto",
-            lang: "hi",
-            body: `${newRoom.isDirect ? '' : (mxEvent.sender.name+': ')}${newRoom.lastMessage.msgBody}`,
-            icon: iconurl,
-            silent: true,
-            sound: 'http://data.huiyi8.com/yinxiao/mp3/73913.mp3',
+        const notification = new Notification(newRoom.name, {
+          dir: 'auto',
+          lang: 'hi',
+          body: `${newRoom.isDirect ? '' : (`${mxEvent.sender.name}: `)}${newRoom.lastMessage.msgBody}`,
+          icon: iconurl,
+          silent: true,
+          sound: 'http://data.huiyi8.com/yinxiao/mp3/73913.mp3',
         });
         // // console.log(notification);
         notification.onclick = () => {
@@ -93,7 +93,7 @@ export default {
             this.$refs.chatPage.enterRoom(newRoom);
           }
           notification.close();
-        }
+        };
       }
     });
     emitter.addListener('USERS_INIT', (usermap) => {
@@ -111,7 +111,7 @@ export default {
       window.matrix && window.matrix.stop();
       window.matrix = null;
       this.$router.push('/login');
-    })
+    });
   },
   methods: {
     windowResize() {
@@ -122,7 +122,7 @@ export default {
           this.$store.commit('setWindowWidth', window.innerWidth);
           // console.log(this.$store.state.windowHeight);
         }, 500);
-      }
+      };
     },
     controlPageUnload() {
       window.onbeforeunload = () => {
@@ -140,31 +140,31 @@ export default {
         // window.matrix.stop();
         // window.matrix = null;
         // this.$router.push('/login');
-        //鼠标相对于用户屏幕的水平位置 - 窗口左上角相对于屏幕左上角的水平位置 = 鼠标在当前窗口上的水平位置
-        var n = window.event.screenX - window.screenLeft;
-        //鼠标在当前窗口内时，n<m，b为false；鼠标在当前窗口外时，n>m，b为true。20这个值是指关闭按钮的宽度
-        var b = n > document.documentElement.scrollWidth-20;
-        //鼠标在客户区内时，window.event.clientY>0；鼠标在客户区外时，window.event.clientY<0
+        // 鼠标相对于用户屏幕的水平位置 - 窗口左上角相对于屏幕左上角的水平位置 = 鼠标在当前窗口上的水平位置
+        const n = window.event.screenX - window.screenLeft;
+        // 鼠标在当前窗口内时，n<m，b为false；鼠标在当前窗口外时，n>m，b为true。20这个值是指关闭按钮的宽度
+        const b = n > document.documentElement.scrollWidth - 20;
+        // 鼠标在客户区内时，window.event.clientY>0；鼠标在客户区外时，window.event.clientY<0
         // console.log(window.event, event, n,b);
-        if(b && window.event.clientY < 0 || window.event.altKey || window.event.ctrlKey){
-            // console.log('关闭浏览器');
-　    　     //关闭浏览器时你想做的事
-            window.localStorage.removeItem(IAM_INFO_KEY);
-            window.matrix.stop();
-            window.matrix = null;
-            this.$router.push('/login');
-        }else if(event.clientY > document.body.clientHeight || event.altKey){
-            // console.log('刷新浏览器');
-　　         //刷新浏览器时你想做的事
-            // alert("刷新");
+        if (b && window.event.clientY < 0 || window.event.altKey || window.event.ctrlKey) {
+          // console.log('关闭浏览器');
+          // 关闭浏览器时你想做的事
+          window.localStorage.removeItem(IAM_INFO_KEY);
+          window.matrix.stop();
+          window.matrix = null;
+          this.$router.push('/login');
+        } else if (event.clientY > document.body.clientHeight || event.altKey) {
+          // console.log('刷新浏览器');
+          // 刷新浏览器时你想做的事
+          // alert("刷新");
         }
-      }
-    }
+      };
+    },
   },
   computed: {
     ...mapState(['chatRoom', 'roomListDraging', 'showLoadingMask']),
   },
-}
+};
 </script>>
 
 <style lang="scss">

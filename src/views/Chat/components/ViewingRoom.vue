@@ -163,20 +163,20 @@
 </template>
 
 <script lang="js">
-import { Message, Draft } from '@finogeeks/finchat-model';
+import { Message } from '@finogeeks/finchat-model';
+import { IAM_INFO_KEY } from '@/commonVariable';
+import { debounce as _debounce } from 'lodash';
+import { iconTypeMatcher } from '@/utils/icon';
+import { agentJudge } from '@/utils.js';
+import IAM from '@/model/iam';
 import emitter from '@/utils/event-emitter';
 import { mapState } from 'vuex';
 import canvasUtils from '@/utils/canvas';
-import { debounce as _debounce } from 'lodash';
 import MessageComponent from './Message.vue';
 // import Editor from './Editor.vue';
 import Editor from './editor-new/editor';
-import { cloneDeep } from 'lodash';
-import { IAM_INFO_KEY, BASE_URL } from '@/commonVariable';
+
 import editorMixin from './mixins/editor.mixin';
-import icons, { iconTypeMatcher } from '@/utils/icon';
-import { agentJudge } from '@/utils.js';
-import IAM from '@/model/iam';
 
 
 const Matrix = window.matrix;
@@ -190,10 +190,10 @@ export default {
   mixins: [editorMixin],
   components: {
     'timeline-message': MessageComponent,
-    'editor': Editor,
+    editor: Editor,
   },
   created() {
-      
+
   },
   data() {
     return {
@@ -203,14 +203,14 @@ export default {
       isLoading: false,
       recordsScrollHeight: 0,
       recoresScrollTop: 0,
-    //   showOperateBtn: false,
-    //   showQuitModal: false,
+      //   showOperateBtn: false,
+      //   showQuitModal: false,
       drafts: [],
       confirmFile: {},
       uploadQueue: [],
       timeLineFix: false,
       showGotoBottomBtn: false,
-      agentJudge: agentJudge,
+      agentJudge,
       oldEditingMsg: '',
       editingMsg: '',
       showRoomUpBtn: false,
@@ -241,7 +241,7 @@ export default {
         this.scrollToBottom({ forceRecipt: true });
       });
     });
-    emitter.addListener('ROOM_UPDATE',(newRoom) => {
+    emitter.addListener('ROOM_UPDATE', (newRoom) => {
       if (newRoom.isArchiveChannel) this.$emit('quitRoom');
       if (newRoom.membership === 'leave') {
         // this.$Message.error({
@@ -250,13 +250,13 @@ export default {
         // });
         // console.log('VIEWINGROOM ROOMUPDATE QUIT');
         // console.log(newRoom);
-        this.$emit('quitRoom')
-      };
+        this.$emit('quitRoom');
+      }
     });
     const myinfo = JSON.parse(window.localStorage.getItem(IAM_INFO_KEY));
     // console.log(myinfo);
     this.$fcNetdisk.init(
-      '', 
+      '',
       myinfo.userId,
       myinfo.jwt,
       myinfo.access_token,
@@ -283,22 +283,22 @@ export default {
       this.timer = setTimeout(() => {
         // console.log('setTimeout=============');
         // console.log(this.editorHeight+this.mouseMoveY);
-        this.$store.commit('setEditorHeight', this.editorHeight-this.mouseMoveY);
+        this.$store.commit('setEditorHeight', this.editorHeight - this.mouseMoveY);
         clearTimeout(this.timer);
         this.timer = null;
         this.mouseMoveY = 0;
-      }, 16)
+      }, 16);
     },
     copyRoomJumpUrl() {
       // window.clipboardData.setData('text',this.roomJumpUrl);
       // const selection = window.getSelection();
       // const range = document.createRange();
-      let inputEle = document.createElement('input')
-      document.body.appendChild(inputEle)
-      inputEle.setAttribute('value', this.roomJumpUrl)
-      inputEle.setAttribute('readonly', 'readonly')
-      inputEle.select()
-      document.execCommand('copy')
+      const inputEle = document.createElement('input');
+      document.body.appendChild(inputEle);
+      inputEle.setAttribute('value', this.roomJumpUrl);
+      inputEle.setAttribute('readonly', 'readonly');
+      inputEle.select();
+      document.execCommand('copy');
       document.body.removeChild(inputEle);
       this.$Message.success('复制成功！');
     },
@@ -309,22 +309,23 @@ export default {
       // // console.log(this.$route);
       // // console.log(window.location);
       const baseurl = window.location.href.split('?')[0];
-      const url = `${baseurl}?chatroom=${this.viewingRoom.roomId}`
+      const url = `${baseurl}?chatroom=${this.viewingRoom.roomId}`;
       this.roomJumpUrl = url;
       this.roomConfig.show = true;
       // console.log(this.roomJumpUrl);
     },
     async computeUnread() {
-      if (this.viewingRoom.unread > 9) {
-        this.showRoomUpBtn = this.viewingRoom.unread;
-        const message = await window.matrix.viewingRoom.getTimelineMsg(
-          this.viewingRoomId, 
-          this.roomTimeLine[this.roomTimeLine.length - 1].eventId, 
-          'BACKWORDS', 
-          this.viewingRoom.unread
-        );
-        this.$store.commit('loadMoreTimeline', {message, roomId: this.viewingRoomId});
-      }
+      // 去除未读加载相关
+      // if (this.viewingRoom.unread > 9) {
+      //   this.showRoomUpBtn = this.viewingRoom.unread;
+      //   const message = await window.matrix.viewingRoom.getTimelineMsg(
+      //     this.viewingRoomId,
+      //     this.roomTimeLine[this.roomTimeLine.length - 1].eventId,
+      //     'BACKWORDS',
+      //     this.viewingRoom.unread,
+      //   );
+      //   this.$store.commit('loadMoreTimeline', { message, roomId: this.viewingRoomId });
+      // }
     },
     scrollUp() {
       const listComp = this.$refs.records;
@@ -336,7 +337,7 @@ export default {
       // console.log(firstUnreadMsg);
       const furmd = this.$refs[firstUnreadMsg.eventId];
       // console.log(furmd[0].$el.offsetTop);
-      listComp.scrollTop = furmd[0].$el.offsetTop
+      listComp.scrollTop = furmd[0].$el.offsetTop;
       this.showRoomUpBtn = false;
     },
     imgOnloaded() {
@@ -365,10 +366,10 @@ export default {
         this.$refs.editor.replaceText(this.viewingRoom.roomEditingMsg);
       }
     },
-    saveEditingMsg() {
+    saveEditingMsg(room) {
       // this.viewingRoom.roomEditingMsg = this.editingMsg;
       this.viewingRoom.roomEditingMsg = this.$refs.editor.originContent();
-      this.$store.commit('updateRoomList', null);
+      this.$store.commit('updateRoomList', { ...room, unread: 0 });
     },
     saveOldEditMsg() {
       this.oldEditingMsg = this.$refs.editor.originContent();
@@ -379,7 +380,7 @@ export default {
       // await window.matrix.viewingRoom.loadMoreMessage({roomId: this.viewingRoomId});
       const message = await window.matrix.viewingRoom.getTimelineMsg(this.viewingRoomId, this.roomTimeLine[0].eventId);
       // console.log(message);
-      this.$store.commit('loadMoreTimeline', {message, roomId: this.viewingRoomId});
+      this.$store.commit('loadMoreTimeline', { message, roomId: this.viewingRoomId });
     },
     async sendMessage({ roomId, message }, msgType) {
       // console.log('SEND MESSAGE');
@@ -391,7 +392,7 @@ export default {
       let { scrollTop, scrollHeight, clientHeight } = listComp;
       this.showRoomUpBtn = false;
       // // console.log(scrollTop,clientHeight,scrollHeight);
-      if ( scrollHeight > (scrollTop + clientHeight) ) {
+      if (scrollHeight > (scrollTop + clientHeight)) {
         this.timeLineFix = true;
       } else {
         this.timeLineFix = false;
@@ -405,7 +406,7 @@ export default {
         this.handleMoreTimeline();
         return;
       }
-      if ( (scrollTop + clientHeight) === scrollHeight ) {
+      if ((scrollTop + clientHeight) === scrollHeight) {
         // window.matrix.viewingRoom.setReceipt(this.viewingRoomId);
         if (this.viewingRoom.totlaunread > 0) {
           this.handleSendReceipt();
@@ -414,14 +415,14 @@ export default {
       }
       if (scrollHeight <= FOLLOW_HEIGHT) {
         // console.log(`DON'T LOAD MORE`);
-        return;
+
       }
     },
     handleScroll() {
       // // console.log('scroll~~~~');
       const listComp = this.$refs.records;
       const { scrollTop, scrollHeight, clientHeight } = listComp;
-      if ( scrollHeight > (scrollTop + clientHeight) ) {
+      if (scrollHeight > (scrollTop + clientHeight)) {
         this.showGotoBottomBtn = true;
       } else {
         this.showGotoBottomBtn = false;
@@ -442,11 +443,11 @@ export default {
       const message = await window.matrix.viewingRoom.getTimelineMsg(this.viewingRoomId, this.roomTimeLine[0].eventId);
       // console.log(message);
       if (message.length === 0) {
-        this.$store.commit('setOldTimelineTable', { roomId: this.viewingRoomId, hasOldTimeline: true })
+        this.$store.commit('setOldTimelineTable', { roomId: this.viewingRoomId, hasOldTimeline: true });
         this.isLoading = false;
         return;
       }
-      this.$store.commit('loadMoreTimeline', {message, roomId: this.viewingRoomId});
+      this.$store.commit('loadMoreTimeline', { message, roomId: this.viewingRoomId });
       this.$nextTick(() => {
         this.$refs.records.scrollTop = this.$refs.records.scrollHeight - this.recordsScrollHeight - 20;
       });
@@ -728,7 +729,7 @@ export default {
         } else {
           imageResponse = await this.$fcNetdisk.uploadNative(origin, this.viewingRoomId, {}, this.handleUploadProgress);
         }
-      } catch(e) {
+      } catch (e) {
         console.log(e);
       }
       // console.log('await this.$fcNetdisk.uploadNative END');
@@ -745,12 +746,12 @@ export default {
         // this.removePendingEvent(txnId);
         const res = await this.sendMessage({ roomId: this.viewingRoomId, message: content });
         // if (res.status && res.data.eventId) {
-          // this.cacheFile(res.data.eventId, fileBlob, content);
+        // this.cacheFile(res.data.eventId, fileBlob, content);
         // }
         // this.$refs['chat-records'].handleLatest();
       } else if (imageResponse.data.data.exp === 'token expired') {
         emitter.emit('TOKEN_INVALID');
-      }  else {
+      } else {
         // this.handlePendingEventError(txnId);
       }
     },
@@ -813,7 +814,7 @@ export default {
         } else {
           thumbnailResponse = await this.$fcNetdisk.uploadNative(thumbnail.blob, this.viewingRoomId);
         }
-      } catch(e) {
+      } catch (e) {
         console.log(e);
       }
       // set thumbnail url
@@ -828,7 +829,7 @@ export default {
         } else {
           videoResponse = await this.$fcNetdisk.uploadNative(origin, this.viewingRoomId, mxEvent, this.handleUploadProgress);
         }
-      } catch(e) {
+      } catch (e) {
         console.log(e);
       }
       // set video url
@@ -876,13 +877,13 @@ export default {
       // const mxEvent = this.rawRoom.findEventById(txnId);
       const mxEvent = null;
 
-      try{
+      try {
         if (NET_DISK_API) {
           response = await this.$fcNetdisk.uploadGroup(origin, this.viewingRoomId, Message.types.file, content, false, mxEvent, this.handleUploadProgress);
         } else {
           response = await this.$fcNetdisk.uploadNative(origin, this.viewingRoomId, mxEvent, this.handleUploadProgress);
         }
-      } catch(e) {
+      } catch (e) {
         console.log(err);
       }
       if (response.status) {
@@ -933,7 +934,7 @@ export default {
       // this.rawRoom.addPendingEvent(mxEvent, txnId);
       return txnId;
     },
-  }, 
+  },
   computed: {
     ...mapState(['showRoomList', 'windowHeight', 'windowWidth', 'userList', 'myinfo', 'hasOldTimelineTable', 'chatRoom', 'roomListWidth', 'editorHeight', 'editorDraging']),
     roomList() {
@@ -961,7 +962,7 @@ export default {
     //   // console.log('timeLineFix change!!', val);
     // },
   },
-}
+};
 </script>
 
 <style lang="scss">

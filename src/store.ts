@@ -38,8 +38,8 @@ export default new Vuex.Store({
       // // console.log(rooms);
       state.roomList = sortRoomByFavourive(rooms.filter(e => !e.isArchiveChannel));
     },
-    setViewingRoom: (state, room) => {
-      state.viewingRoom = room.roomId;
+    setViewingRoom: (state, roomId) => {
+      state.viewingRoom = roomId;
     },
     setRoomTimeLine: (state, room) => {
 
@@ -75,6 +75,9 @@ export default new Vuex.Store({
     //   window.matrix.viewingRoom.setReceipt(this.viewingRoomId);
     // }, 500, { leading: true, trailing: false }),
     updateRoomList: (state, newroom) => {
+      if (state.viewingRoom === newroom.roomId) {
+        newroom.unread = 0;
+      };
       // console.log('STORE: updateRoomList');
       if (newroom && (newroom.membership === 'leave' || newroom.isArchiveChannel)) {
         // console.log("newroom.membership === 'leave'");

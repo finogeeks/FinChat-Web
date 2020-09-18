@@ -39,12 +39,6 @@
                           alt=""
                           @error="imgOnError(member)">
                       </div>
-                      <div
-                        v-if="item.isChannel"
-                        class="avatar-wear"
-                        >
-                        <img src="@/assets/images/room_set_channel.svg" alt="">
-                      </div>
                   </div>
                   <div class="room-overview">
                     <div class="room-name">
@@ -55,8 +49,8 @@
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;">{{item.name}}</span>
-                        <div class="room-tag" v-if="item.isSecret">保密</div>
-                        <div class="room-tag" v-else-if="item.isChannel && item.isPrivateChannel">私密</div>
+                        <!-- <div class="room-tag" v-if="item.isSecret">保密</div> -->
+                        <!-- <div class="room-tag" v-else-if="item.isChannel && item.isPrivateChannel">私密</div> -->
                         <span style="float:right;font-size: 12px;color: #999999;flex-grow: 1;text-align: right;">{{getLastMsgTime(item.lastMessage && item.lastMessage.eventTime)}}</span>
                     </div>
                     <div v-if="item.roomEditingMsg && item.roomEditingMsg !== '<br>' && item.roomId !== viewingRoom.roomId" class="room-lastmessage">
@@ -69,15 +63,11 @@
                     </div>
                   </div>
                   <div class="room-tip">
-                    <div v-if="item.isMute" style="display: flex;align-items: center;">
+                    <div v-if="item.isMute && !item.unread" style="display: flex;align-items: center;">
                       <img src="@/assets/images/ic_mute.svg" alt="">
                     </div>
-                    <div v-if="item.isMute && item.unread" class="mute-unread">
-                        
-                    </div>
-                    <div v-if="!item.isMute && item.unread" class="unread">
-                      {{item.unread}}
-                    </div>
+                    <div v-else-if="item.isMute && item.unread" class="mute-unread"></div>
+                    <div v-if="!item.isMute && item.unread" class="unread">{{item.unread}}</div>
                   </div>
               </div>
             </div>
@@ -105,12 +95,12 @@ const Matrix = window.matrix;
 
 export default {
   components: {
-      
+
   },
   props: ['viewingRoomId', 'isConsultMode'],
   data() {
     return {
-      DEFAULT_AVATAR: require("@/assets/images/default__avatar.png"),
+      DEFAULT_AVATAR: require('@/assets/images/default__avatar.png'),
       showOperateBtn: false,
       showQuitModal: false,
       drafts: [],
@@ -175,25 +165,24 @@ export default {
     changeImgAndTitle(signal) {
       const head = document.getElementsByTagName('head')[0];
       const iconlinks = Array.prototype.filter.call(head.childNodes, e => e.rel === 'icon');
-      iconlinks.forEach(e => {
-        e.href = signal ? "./old_favicon.png" : "./new_favicon.png";
+      iconlinks.forEach((e) => {
+        e.href = signal ? './old_favicon.png' : './new_favicon.png';
       });
       const titles = document.getElementsByTagName('title');
-      Array.prototype.filter.call(titles, e => {
-        e.innerHTML = signal ? WEB_NAME : `${WEB_NAME}(${this.hasUnread})`;
+      Array.prototype.filter.call(titles, (e) => {
+        e.innerHTML = signal ? WEB_NAME : `(${this.hasUnread})${WEB_NAME}`;
       });
     },
     async enterRoom(room) {
-        this.$emit('enterRoom', room);
+      this.$emit('enterRoom', room);
     },
     getRoomAvatar(room) {
       if (!window.matrix) return;
       if (!window.matrix.user) return;
       if (room.avatar) {
         return window.matrix.user.mxcTransfer(room.avatar || '');
-      } else {
-        return this.DEFAULT_AVATAR;
       }
+      return this.DEFAULT_AVATAR;
     },
     getMmberAvatar(member) {
       if (!window.matrix) return;
@@ -201,9 +190,8 @@ export default {
       if (!member) return '';
       if (member && member.avatarUrl) {
         return window.matrix.user.mxcTransfer(member.avatarUrl || '');
-      } else {
-        return this.DEFAULT_AVATAR;
       }
+      return this.DEFAULT_AVATAR;
     },
     imgOnError(room) {
       room.imgerror = true;
@@ -218,10 +206,9 @@ export default {
         timeObj.getMonth() === nowDate.getMonth() &&
         timeObj.getDate() === nowDate.getDate()
       ) {
-        return `${timeObj.getHours() > 12 ? '下午': '上午'}${timeObj.getHours() > 12 ? timeObj.getHours() - 12 : timeObj.getHours()}:${timeObj.getMinutes() > 9 ? '' : 0}${timeObj.getMinutes()}`
-      } else {
-        return `${timeObj.getMonth()+1}/${timeObj.getDate()}`;
+        return `${timeObj.getHours() > 12 ? '下午' : '上午'}${timeObj.getHours() > 12 ? timeObj.getHours() - 12 : timeObj.getHours()}:${timeObj.getMinutes() > 9 ? '' : 0}${timeObj.getMinutes()}`;
       }
+      return `${timeObj.getMonth() + 1}/${timeObj.getDate()}`;
     },
     getLastMsg(item, room) {
       if (!item) return '';
@@ -232,9 +219,8 @@ export default {
       // }
       if (item.senderId === this.myinfo.userId || item.msgType === 'notice' || room.isDirect) {
         return item.msgBody;
-      } else {
-        return `${item.sender}:${item.msgBody}`
       }
+      return `${item.sender}:${item.msgBody}`;
     },
     cancleQuit() {
       this.showQuitModal = false;
@@ -252,31 +238,27 @@ export default {
     showAlertMsg(item) {
       return item.totlaunread > 0 && item.highlightunread > 0;
     },
-  }, 
+  },
   computed: {
     ...mapState(['showRoomList', 'windowHeight', 'windowWidth', 'userList', 'myinfo', 'hasOldTimelineTable', 'roomListWidth', 'roomListDraging']),
     roomList() {
       console.log('VUEX STORE: roomList');
       const roomList = this.$store.state.roomList.filter(e => !e.isDelete);
-      console.log(roomList);
       const roomListContainer = this.$refs.roomListContainer;
       if (this.roomListDraging) {
         const scrollTop = roomListContainer.scrollTop;
-        const start = Math.floor(scrollTop/60);
-        const end = Math.floor(this.windowHeight / 60)+1+start;
+        const start = Math.floor(scrollTop / 60);
+        const end = Math.floor(this.windowHeight / 60) + 1 + start;
         this.oriScrollTop = scrollTop;
         this.$nextTick(() => {
-          roomListContainer && (roomListContainer.scrollTop = (scrollTop%60));
-        })
-        return roomList.slice(start,end);
-      } else {
-        return roomList;
+          roomListContainer && (roomListContainer.scrollTop = (scrollTop % 60));
+        });
+        return roomList.slice(start, end);
       }
+      return roomList;
     },
     hasUnread() {
-      return this.roomList.reduce((totle, room) => {
-        return totle + (room.isMute ? 0 : room.unread);
-      }, 0);
+      return this.roomList.reduce((totle, room) => totle + (room.isMute ? 0 : room.unread), 0);
     },
     viewingRoom() {
       return this.roomList.find(room => room.roomId === this.viewingRoomId) || {};
@@ -291,15 +273,15 @@ export default {
         });
       }
     },
-    hasUnread (val) {
+    hasUnread(val) {
       if (val) {
         this.switchFavicon();
       } else {
         this.stopSwitchFavicon();
       }
-    }
+    },
   },
-}
+};
 </script>
 
 <style lang="scss">
@@ -440,13 +422,6 @@ export default {
               width: 40px;
               height: 40px;
               border-radius: 4px;
-            }
-            .avatar-wear{
-              position: absolute;
-              width: 15px;
-              height: 15px;
-              right: -2px;
-              bottom: -2px;
             }
             .member-avatar-container{
                 display: flex;
