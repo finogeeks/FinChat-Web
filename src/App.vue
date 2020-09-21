@@ -53,8 +53,8 @@ export default {
       this.$store.commit('updateRoomList', cloneDeep(newRoom));
     });
     emitter.addListener('NEW_MSG_ALERT', async (mxEvent, newRoom) => {
-      console.log(mxEvent, '来消息了');
-      console.log(this.$store);
+      // console.log(mxEvent, '来消息了');
+      // console.log(this.$store);
       const msgContent = mxEvent.event.content;
       const iamInfo = JSON.parse(window.localStorage.getItem(IAM_INFO_KEY));
       const userId = iamInfo ? iamInfo.user_id : null;
