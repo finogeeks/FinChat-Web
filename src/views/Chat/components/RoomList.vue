@@ -496,6 +496,8 @@ export default {
               position: relative;
               background: #ff4240;
               color: #ffffff;
+              min-width: 14px;
+              min-height: 14px;
               padding: 0 3px;
               border-radius: 7px;
               text-align: center;

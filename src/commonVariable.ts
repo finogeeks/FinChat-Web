@@ -23,6 +23,7 @@ const MSG_TYPE_ALERT = {
     location: 'm.location',
     file: 'm.file',
     alert: 'm.alert',
+    url: 'm.url',
 }
 const MSG_TYPE = {
     text: 'm.text',
@@ -32,6 +33,7 @@ const MSG_TYPE = {
     location: 'm.location',
     file: 'm.file',
     alert: 'm.alert',
+    url: 'm.url',
 }
 
 export {
