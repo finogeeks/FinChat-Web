@@ -67,7 +67,7 @@ export default {
       if (!mxEvent.event.content) return;
       if (!mxEvent.event.content.msgtype) return;
       const msgtype = mxEvent.event.content.msgtype; // 类型字段
-      if (sender === userId) return; // 本人消息过滤 
+      if (sender === userId) return; // 本人消息过滤
       const msgCanAlert = Object.keys(MSG_TYPE_ALERT).some(e => MSG_TYPE_ALERT[e] === msgtype);
       if (!msgCanAlert) return;
       if (!isMute || (isMute && msgContent.msgtype === MSG_TYPE.alert && alertMe)) {
@@ -88,7 +88,7 @@ export default {
         if (MSG_TYPE.alert === msgtype) {
           sender = '';
           body = `[有人@我]${mxEvent.sender.name} :${mxEvent.event.content.body}`;
-        };
+        }
 
         const notification = new Notification(newRoom.name, {
           dir: 'auto',
