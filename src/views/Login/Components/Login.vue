@@ -46,13 +46,8 @@
 </template>
 
 <script lang="js">
-import IAM from '@/model/iam';
-import Matrix from '@/matrix';
-import emitter from '@/utils/event-emitter';
-import { cloneDeep } from 'lodash';
-// const { login, startMatrix } = require('./utils.js');
-import { login, startMatrix } from '../../../utils.js';
 import { showSingUpHostname } from '@/jwtRefresh';
+import { login } from '../../../utils.js';
 
 export default {
   beforeRouteEnter(to, from, next) {
@@ -81,7 +76,6 @@ export default {
   },
   methods: {
     async handleLogin() {
-      // console.log('handleLogin');
       if (this.loging || this.cantLogin) return;
       this.loging = true;
       const loginRes = await login(this.userId, this.password);

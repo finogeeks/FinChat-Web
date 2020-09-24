@@ -1,18 +1,18 @@
 import axios from 'axios';
 import qs from 'qs';
 import { IAM_INFO_KEY, CLIENT_ID, REALMS, IAM_URL, BASE_URL } from '@/commonVariable';
-import {startJwtRefresh,stopJwtRefresh} from '@/jwtRefresh';
+import { startJwtRefresh, stopJwtRefresh } from '@/jwtRefresh';
 
 // iam info 处理模块
 
 axios.interceptors.response.use(response =>
   response
-  , error => Promise.reject({
+, error => Promise.reject({
   msg: error,
   data: error.response.data,
 }));
 
-const instance = axios.create({ 
+const instance = axios.create({
   baseURL: '',
   headers: {
     // 'content-type': 'application/x-www-form-urlencoded',
@@ -45,11 +45,11 @@ export async function getVerifyCode(phone) {
   await instance.request({
     method: 'GET',
     url: `/api/v1/finchat/contact/manager/register/phone/${phone}`,
-  }).then(res => {
+  }).then((res) => {
     response = res;
-  }).catch(err => {
+  }).catch((err) => {
     response = err.response;
-  })
+  });
   return response;
 }
 
@@ -57,47 +57,47 @@ export async function verifyVerifyCode(phone, verifyCode, type) {
   let response;
   await instance.request({
     method: 'POST',
-    url: `/api/v1/finchat/contact/manager/register/verify`,
+    url: '/api/v1/finchat/contact/manager/register/verify',
     data: {
-      phone, verifyCode, type
-    }
-  }).then(res => {
+      phone, verifyCode, type,
+    },
+  }).then((res) => {
     response = res;
-  }).catch(err => {
+  }).catch((err) => {
     response = err.response;
-  })
+  });
   return response;
 }
 
-export async function changeBySms({phone, verifyCode, password}) {
+export async function changeBySms({ phone, verifyCode, password }) {
   let response;
   await instance.request({
     method: 'PUT',
-    url: `/api/v1/finchat/contact/manager/register/changeBySms`,
+    url: '/api/v1/finchat/contact/manager/register/changeBySms',
     data: {
-      phone, verifyCode, password
-    }
-  }).then(res => {
+      phone, verifyCode, password,
+    },
+  }).then((res) => {
     response = res;
-  }).catch(err => {
+  }).catch((err) => {
     response = err.response;
-  })
+  });
   return response;
 }
 
-export async function userRegist({phone, verifyCode, account, password}) {
+export async function userRegist({ phone, verifyCode, account, password }) {
   let response;
   await instance.request({
     method: 'POST',
-    url: `/api/v1/finchat/contact/manager/register`,
+    url: '/api/v1/finchat/contact/manager/register',
     data: {
-      phone, verifyCode, account, password
-    }
-  }).then(res => {
+      phone, verifyCode, account, password,
+    },
+  }).then((res) => {
     response = res;
-  }).catch(err => {
+  }).catch((err) => {
     response = err.response;
-  })
+  });
   return response;
 }
 
@@ -105,16 +105,16 @@ export async function login(userName, userPassWord) {
   let response = null;
   let browser = '';
   let userAgent = navigator.userAgent;
-  const Agents = [ "Windows", "Mac", "Intel", "linux", "Freebsd", "Android", "iPhone", "symbianos", "ipad", "ipod", "CPU"];
+  const Agents = ['Windows', 'Mac', 'Intel', 'linux', 'Freebsd', 'Android', 'iPhone', 'symbianos', 'ipad', 'ipod', 'CPU'];
   let system = '';
   let reg;
-  for (var v = 0; v < Agents.length; v++) {
-      if (userAgent.indexOf(Agents[v]) > 0) {
-          reg = new RegExp(`${Agents[v]} .*?\\)`)
-          reg = reg.exec(userAgent)[0];
-          system = reg.substr(0, reg.length -1)
-          break;
-      }
+  for (let v = 0; v < Agents.length; v++) {
+    if (userAgent.indexOf(Agents[v]) > 0) {
+      reg = new RegExp(`${Agents[v]} .*?\\)`);
+      reg = reg.exec(userAgent)[0];
+      system = reg.substr(0, reg.length - 1);
+      break;
+    }
   }
   userAgent = navigator.userAgent.toLowerCase();
   let s;
@@ -125,39 +125,46 @@ export async function login(userName, userPassWord) {
   //   clientType: '',
   //   deviceName: 'web',
   // }
+  const displayName = {
+    loginTime: Date.now(),
+    system: `${system} - Web`,
+    clientType: '',
+    deviceName: browser.replace(/:/g, '').replace(/ /g, ''),
+    version: `web ${window.version || ''}`,
+  };
   await instance.request({
     method: 'POST',
-    url: `/api/v1/registry/login`,
+    url: '/api/v1/registry/login',
     data: {
-      "userId": userName,
-      "password": userPassWord,
-      "login_type": "pwd",
-      "device_id": `web-${new Date().getTime()}`,
-      "app_type": "STAFF",
-      "display_name": `{\"loginTime\":${new Date().getTime()},\"system\":\"${system} - Web\",\"clientType\":\"\",\"deviceName\":\"${browser.replace(/:/g,'').replace(/ /g,'')}\"}`,
-      "device_type": "web"
+      userId: userName,
+      password: userPassWord,
+      login_type: 'pwd',
+      device_id: `web-${new Date().getTime()}`,
+      app_type: 'STAFF',
+      display_name: JSON.stringify(displayName),
+      device_type: 'web',
     },
-  }).then(res => {
+  }).then((res) => {
     response = res;
-  }).catch(err => {
+  }).catch((err) => {
     response = err.response;
   });
   return response;
 }
 
 export async function logout() {
-  const basic = JSON.parse(window.localStorage.getItem(IAM_INFO_KEY))
+  const basic = JSON.parse(window.localStorage.getItem(IAM_INFO_KEY));
   let response = null;
   await instance.request({
     method: 'POST',
     url: '/api/v1/registry/homeserver/logout',
     data: {
       access_token: basic.access_token,
-    }
-  }).then(res => {
+    },
+  }).then((res) => {
     stopJwtRefresh();
     response = res;
-  }).catch(err => {
+  }).catch((err) => {
     response = err.response;
   });
 }
@@ -226,18 +233,16 @@ export function bindAccount({ url, jwt, token, type = 'bind' }) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
-  }).catch((err) => {
+  }).catch(err =>
     // console.log(err);
-    return err;
-  });
+    err,
+  );
 }
 
-export const getAccountData = async () => {
-  return (await window.mxClient.getAccountData({ type: 'm.modular.swan.dispatch' })) || {}
-}
+export const getAccountData = async () => (await window.mxClient.getAccountData({ type: 'm.modular.swan.dispatch' })) || {};
 
 export const joinRoom = async (roomId) => {
-  const basic = JSON.parse(window.localStorage.getItem(IAM_INFO_KEY))
+  const basic = JSON.parse(window.localStorage.getItem(IAM_INFO_KEY));
   return instance.request({
     url: `/api/v1/channel/rooms/${roomId}/privateJoin?access_token=${basic.access_token}&jwt=${basic.jwt}`,
     method: 'POST',
@@ -252,7 +257,7 @@ export const joinRoom = async (roomId) => {
 };
 
 export const inviteAndJoin = async (roomId, userid) => {
-  const basic = JSON.parse(window.localStorage.getItem(IAM_INFO_KEY))
+  const basic = JSON.parse(window.localStorage.getItem(IAM_INFO_KEY));
   return instance.request({
     url: `/api/v1/channel/rooms/${roomId}/inviteAndJoin?access_token=${basic.access_token}&jwt=${basic.jwt}`,
     method: 'POST',
@@ -267,12 +272,10 @@ export const inviteAndJoin = async (roomId, userid) => {
   });
 };
 
-export const getChannelDetail = (roomId) => {
-  return instance.request({
-    method: 'GET',
-    url: `/api/v1/channel/channels/${roomId}`,
-  });
-}
+export const getChannelDetail = roomId => instance.request({
+  method: 'GET',
+  url: `/api/v1/channel/channels/${roomId}`,
+});
 
 export default {
   getInfo,
