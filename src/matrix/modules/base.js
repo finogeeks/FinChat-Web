@@ -1,20 +1,12 @@
 import emojione from 'emojione';
 import moment from 'moment';
-import sdk, { FinChatNormal, FinChatNetDisk, EventStatus } from '@finogeeks/matrix-js-sdk';
-import emitter from '@/utils/event-emitter';
-import { last as _last, cloneDeep } from 'lodash';
+import sdk, { FinChatNormal } from '@finogeeks/matrix-js-sdk';
+import { ChannelService } from '@/utils/channel';
+import { IAM_INFO_KEY, RoomType } from '@/commonVariable';
+import { last as _last } from 'lodash';
 import { Message } from '@finogeeks/finchat-model';
 
-import {
-  AVATAR_SIZE,
-  MAX_MESSAGES_SHOW,
-  FILTER_DEFINITION,
-} from '../config';
-import vuex from '@/store';
-
-import { ChannelService } from '@/utils/channel';
-import { IAM_INFO_KEY, BASE_URL, RoomType } from '@/commonVariable';
-
+import { AVATAR_SIZE, FILTER_DEFINITION } from '../config';
 export default class BaseModule {
   constructor(mxClient, opts) {
     this.mxClient = mxClient;
@@ -347,10 +339,6 @@ export default class BaseModule {
     const timeline = mxRoom.timeline;
 
     const { messages } = this.goThroughTimeLine(timeline);
-    if (mxRoom.roomId === '!173172149777858560:dev.finogeeks.club') {
-      // console.log('get last Message!!');
-      // console.log(messages);
-    }
     const filterMessages = messages.filter((message) => {
       const clearEvent = message._clearEvent.content ? message._clearEvent : message.event;
       const isCallEvent = this.isCallEvent(clearEvent.type);
@@ -418,6 +406,9 @@ export default class BaseModule {
 
   // 房间timeline的消息实体
   buildTimelineMessage(messageEvent, mxRoom) {
+    if (mxRoom.roomId === '!134034672198877184:finogeeks.club') {
+      console.log('messageEvent', messageEvent);
+    }
     const clearEvent = messageEvent._clearEvent.content ? messageEvent._clearEvent : messageEvent.event;
     const sender = messageEvent.sender || mxRoom.getMember(messageEvent.event.sender) || {};
     const eventId = messageEvent.event.event_id;
@@ -512,6 +503,11 @@ export default class BaseModule {
           msgTypeInfo = '[小程序]';
           break;
         case Message.types.unknown:
+          msgBody += '[未知消息类型]';
+          break;
+        // case Message.types.roomRedaction:
+        //   msgBody += '哈哈哈哈';
+        //   break;
         default:
           msgBody += '[未知消息类型]';
           break;
@@ -695,7 +691,23 @@ export default class BaseModule {
           break;
         case Message.types.unknown:
         default:
-          msgBody += '[未知消息类型]';
+          if (clearEvent.hint && clearEvent.hint.endsWith && clearEvent.hint.endsWith('撤回了一条消息')) {
+            msgType = 'redact';
+            msgBody = clearEvent.hint;
+          } else if (!clearEvent.hint && clearEvent.unsigned && clearEvent.unsigned.redacted_because) {
+            msgType = 'redact';
+            let hint;
+            const senderId = clearEvent.sender;
+            if (senderId === this.userId) {
+              hint = '你撤回了一条消息';
+            } else {
+              const senderMxUser = this.mxClient.getUser(senderId);
+              hint = `${(senderMxUser && senderMxUser.displayName) || senderId}撤回了一条消息`;
+            }
+            msgBody = hint;
+          } else {
+            msgBody += '[未知消息类型]';
+          }
           break;
       }
       return {
