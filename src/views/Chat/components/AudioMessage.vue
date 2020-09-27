@@ -47,8 +47,8 @@ export default {
   props: ['eve', 'viewingRoom'],
   data() {
     return {
-        playing: false,
-      DEFAULT_AVATAR: require("../../../assets/images/default__avatar.png"),
+      playing: false,
+      DEFAULT_AVATAR: require('../../../assets/images/default__avatar.png'),
       hasLoaded: false,
     };
   },
@@ -56,27 +56,26 @@ export default {
     'user-header': Header,
   },
   async mounted() {
-      // console.log('===AudioMessage===');
-      // console.log(this.eve);
+    // console.log('===AudioMessage===');
+    // console.log(this.eve);
   },
   methods: {
     findUserName(eve) {
       return this.userList.get(eve.sender).displayName;
     },
     computeTime(eve) {
-      if (this.$moment(new Date()).format('YYYYMMDD')>this.$moment(eve.time).format('YYYYMMDD')) {
+      if (this.$moment(new Date()).format('YYYYMMDD') > this.$moment(eve.time).format('YYYYMMDD')) {
         return this.$moment(eve.time).format('YYYY年MM月DD日 HH:mm');
-      } else {
-        return this.$moment(eve.time).format('HH:mm');
       }
+      return this.$moment(eve.time).format('HH:mm');
     },
     getAudioUrl(url) {
-      return window.matrix.user.mxcTransfer(url || '', )+'&mp3=true';
+      return `${window.matrix.user.mxcTransfer(url || '')}&mp3=true`;
     },
     audioPlay() {
       this.$refs.audioPlayer.play();
       this.playing = true;
-    }
+    },
   },
   computed: {
     ...mapState(['showRoomList', 'windowHeight', 'windowWidth', 'userList', 'myinfo', 'hasOldTimelineTable']),
@@ -86,8 +85,8 @@ export default {
     audioTime() {
       const duration = this.eve.content.info.duration;
       let seconds = Math.floor(duration / 1000) || '0';
-      const minutes = Math.floor(seconds/60) || '0';
-      seconds = Math.floor(seconds - minutes*60) || '00';
+      const minutes = Math.floor(seconds / 60) || '0';
+      seconds = Math.floor(seconds - minutes * 60) || '00';
       return `${minutes}'${seconds}"`;
     },
   },
@@ -95,9 +94,9 @@ export default {
     playing(val) {
       // console.log('WATCH PLAYING CHANGE');
       // console.log(val);
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

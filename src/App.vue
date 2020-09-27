@@ -75,7 +75,9 @@ export default {
           window.focus();
           await Notification.requestPermission();
         }
-        let senderName = '';
+        const findUser = newRoom.members.find(val => val.userId === mxEvent.sender.userId);
+        const senderName = findUser.displayName || findUser.name || findUser.userId;
+        let send = '';
         let body = mxEvent.event.content.body;
         if (MSG_TYPE.file === msgtype) body = `[文件]${mxEvent.event.content.body}`;
         if (MSG_TYPE.url === msgtype) body = `[链接]${mxEvent.event.content.info.title || mxEvent.event.content.info.description}`;
@@ -83,18 +85,18 @@ export default {
         if (MSG_TYPE.audio === msgtype) body = '[语音]';
         if (MSG_TYPE.location === msgtype) body = '[位置]';
         if (!newRoom.isDirect) {
-          senderName = `${mxEvent.sender.name} :`;
+          send = `${senderName} :`;
         }
         if (alertMe) {
-          senderName = '';
-          body = `[有人@我]${mxEvent.sender.name} :${mxEvent.event.content.body}`;
+          send = '';
+          body = `[有人@我]${senderName} :${mxEvent.event.content.body}`;
         }
 
         const notification = new Notification(newRoom.name, {
           dir: 'auto',
           lang: 'hi',
           tag: '',
-          body: `${senderName}${body}`,
+          body: `${send}${body}`,
           icon: window.matrix.user.mxcTransfer((sender && sender.avatarUrl) || ''),
           silent: true,
           sound: 'http://data.huiyi8.com/yinxiao/mp3/73913.mp3',
