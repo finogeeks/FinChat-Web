@@ -2,5 +2,6 @@
 log
 .DS_Store
 .ide
+/dist
 /node_modules
 /package-lock.json

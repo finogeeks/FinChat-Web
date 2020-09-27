@@ -62,7 +62,7 @@ export default {
       // // console.log(sender, userId);
       const hasMsgType = msgContent.msgtype;
       const isMute = newRoom.isMute;
-      const alertMe = msgContent.idlist && msgContent.idlist.indexOf(userId) > -1;
+      const alertMe = msgContent.idlist && (msgContent.idlist.includes(userId) || msgContent.idlist.includes('@all'));
       if (!mxEvent.event.type === 'm.room.message') return; // 房间消息类型
       if (!mxEvent.event.content) return;
       if (!mxEvent.event.content.msgtype) return;
