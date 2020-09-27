@@ -24,6 +24,8 @@ const MSG_TYPE_ALERT = {
     file: 'm.file',
     alert: 'm.alert',
     url: 'm.url',
+    combineForward: 'm.combine_forward',
+    cui: 'm.cui',
 }
 const MSG_TYPE = {
     text: 'm.text',
@@ -34,6 +36,7 @@ const MSG_TYPE = {
     file: 'm.file',
     alert: 'm.alert',
     url: 'm.url',
+    combineForward: 'm.combine_forward',
 }
 
 export {

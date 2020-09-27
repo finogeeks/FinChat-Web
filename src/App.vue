@@ -10,7 +10,7 @@
 <script>
 import emitter from '@/utils/event-emitter';
 import { cloneDeep } from 'lodash';
-import { IAM_INFO_KEY, BASE_URL, MSG_TYPE_ALERT, MSG_TYPE } from '@/commonVariable';
+import { IAM_INFO_KEY, MSG_TYPE_ALERT, MSG_TYPE } from '@/commonVariable';
 import { mapState } from 'vuex';
 import { startJwtRefresh, stopJwtRefresh } from './jwtRefresh';
 
@@ -69,6 +69,7 @@ export default {
       const msgtype = mxEvent.event.content.msgtype; // 类型字段
       if (sender === userId) return; // 本人消息过滤
       const msgCanAlert = Object.keys(MSG_TYPE_ALERT).some(e => MSG_TYPE_ALERT[e] === msgtype);
+      debugger;
       if (!msgCanAlert) return;
       if (!isMute || (isMute && msgContent.msgtype === MSG_TYPE.alert && alertMe)) {
         if (Notification.permission !== 'default') {
@@ -84,6 +85,7 @@ export default {
         if (MSG_TYPE.video === msgtype) body = '[视频]';
         if (MSG_TYPE.audio === msgtype) body = '[语音]';
         if (MSG_TYPE.location === msgtype) body = '[位置]';
+        if (msgtype === 'm.combine_forward' || msgtype === 'm.url' || msgtype === 'm.url' || msgtype === 'm.businesscard') body = '[暂不支持展示该消息类型]';
         if (!newRoom.isDirect) {
           send = `${senderName} :`;
         }
@@ -91,7 +93,6 @@ export default {
           send = '';
           body = `[有人@我]${senderName} :${mxEvent.event.content.body}`;
         }
-
         const notification = new Notification(newRoom.name, {
           dir: 'auto',
           lang: 'hi',
