@@ -212,12 +212,12 @@ export default {
     },
     getLastMsg(item, room) {
       if (!item) return '';
-      // console.log(item);
+      console.log(item.msgType);
       // let msg = {
       //   body: '',
       //   type: '',
       // }
-      if (item.senderId === this.myinfo.userId || item.msgType === 'notice' || room.isDirect) {
+      if (item.senderId === this.myinfo.userId || item.msgType === 'notice' || room.isDirect || item.msgType === 'm.cui' || item.msgType === 'm.shake' || item.msgType === 'm.combine_forward') {
         return item.msgBody;
       }
       return `${item.sender}:${item.msgBody}`;

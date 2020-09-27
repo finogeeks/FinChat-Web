@@ -503,13 +503,13 @@ export default class BaseModule {
           msgTypeInfo = '[小程序]';
           break;
         case Message.types.unknown:
-          msgBody += '[未知消息类型]';
+          msgBody += '[暂不支持展示该消息类型]';
           break;
         // case Message.types.roomRedaction:
         //   msgBody += '哈哈哈哈';
         //   break;
         default:
-          msgBody += '[未知消息类型]';
+          msgBody += '[暂不支持展示该消息类型]';
           break;
       }
       content = {
@@ -706,7 +706,7 @@ export default class BaseModule {
             }
             msgBody = hint;
           } else {
-            msgBody += '[未知消息类型]';
+            msgBody += '[暂不支持展示该消息类型]';
           }
           break;
       }

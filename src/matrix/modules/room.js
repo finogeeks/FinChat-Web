@@ -1,16 +1,6 @@
-import eventBridge from '@/utils/event-bridge';
-import { isEqual, cloneDeep } from 'lodash';
-import BaseModule from './base';
 import emitter from '@//utils/event-emitter';
-import Vue from 'vue'
+import BaseModule from './base';
 
-import {
-  DEFAULT_ENCRYPTION_ALGORITHM,
-  DB_NAME,
-  AVATAR_SIZE,
-  MAX_MESSAGES_SHOW,
-  FILTER_DEFINITION,
-} from '../config';
 export default class RoomModule extends BaseModule {
   constructor(mxClient, opts) {
     super(mxClient, opts);
@@ -30,21 +20,21 @@ export default class RoomModule extends BaseModule {
     this.mxClient.on('Room.timeline', this.updateLastMsg.bind(this));
     this.mxClient.on('Room.receipt', this.updateUnread.bind(this));
     this.mxClient.on('RoomMember.membership', (event, member, oldmembership) => {
-      
-    })
+
+    });
     this.mxClient.on('accountData', (mxEvent) => {
       // console.log('accountData');
       if (mxEvent.getType() === 'm.push_rules') {
         this.syncRooms();
       }
-    })
+    });
     this.mxClient.on('Room.tags', async (mxEvent, mxRoom) => {
       // console.log('Room.tags');
       const newRoom = await this.buildRoom(mxRoom);
       if (!newRoom) return;
       this.setRoom(newRoom);
       emitter.emit('ROOM_UPDATE', newRoom, mxEvent, mxRoom);
-    })
+    });
     // console.log('ROOM MODULE INIT END');
   }
 
