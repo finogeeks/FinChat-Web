@@ -7,7 +7,7 @@ const BASE_URL = env === 'development' ? 'https://finchat-dev.finogeeks.club' : 
 // const BASE_URL = 'https://api.finogeeks.club';
 // const BASE_URL = 'https://finchat-dev.finogeeks.club';
 // const BASE_URL = 'http://fino.qhee.com.cn';
-const WEB_NAME = 'Finchat';
+const WEB_NAME = 'FinChat';
 const RoomType = {
     channel: 'CHANNEL',
     dispatch: 'DISPATCH',
