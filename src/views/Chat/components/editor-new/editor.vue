@@ -37,7 +37,7 @@
           :src="item.imgerror ? DEFAULT_AVATAR : (item.avatarUrl || DEFAULT_AVATAR)" alt=""
           @error="imgOnError(item)"
           >
-        {{item.name}}
+        <div class="item-name">{{ item.displayName || item.name }}</div>
         <div :id="`hoveredAtBlock-${roomEntity.roomId && roomEntity.roomId.replace(/!|:|\./g, '')}`" v-if="curHoverUserId === item.userId"></div>
       </div>
     </div>

@@ -22,8 +22,16 @@
     .at-item {
       cursor: pointer;
       padding: 5px 10px;
+      display: flex;
+      align-items: center;
       &.hover {
         background-color: #f2f2f2;
+      }
+      .item-name{
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+        flex: 1;
       }
     }
   }
