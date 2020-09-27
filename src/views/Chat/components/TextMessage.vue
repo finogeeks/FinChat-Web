@@ -18,7 +18,7 @@
         </div>
         <!-- <div class="event-msgbody">{{eve.content.body}}</div> -->
         <div class="event-msgbody">
-          <div ref="text" v-html="sanitizedText()"></div>
+          <div class="body-content" ref="text" v-html="sanitizedText()"></div>
         </div>
     </div>
   </div>
@@ -38,7 +38,7 @@ export default {
   props: ['eve', 'viewingRoom'],
   data() {
     return {
-      DEFAULT_AVATAR: require("../../../assets/images/default__avatar.png"),
+      DEFAULT_AVATAR: require('../../../assets/images/default__avatar.png'),
       hasLoaded: false,
       error: false,
     };
@@ -47,26 +47,23 @@ export default {
     'user-header': Header,
   },
   async mounted() {
-    
+
   },
   methods: {
     findUserName(eve) {
       return this.userList.get(eve.sender).displayName;
     },
     computeTime(eve) {
-      if (this.$moment(new Date()).format('YYYYMMDD')>this.$moment(eve.time).format('YYYYMMDD')) {
+      if (this.$moment(new Date()).format('YYYYMMDD') > this.$moment(eve.time).format('YYYYMMDD')) {
         return this.$moment(eve.time).format('YYYY年MM月DD日 HH:mm');
-      } else {
-        return this.$moment(eve.time).format('HH:mm');
       }
+      return this.$moment(eve.time).format('HH:mm');
     },
     sanitizedText() {
       const regExp = /(https?:\/\/|finchat:\/\/|www\.)[-a-zA-Z0-9@:;%_+.~#?!&./=]{2,1024}/gi;
       const hasUrl = text => text.match(regExp);
-      // console.log(hasUrl(this.eve.content.body));
-      let renderedText = hasUrl(this.eve.content.body) ? this.highlightUrl(regExp) : this.eve.content.body;
-      renderedText = renderedText.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      // console.log(renderedText);
+      const renderedText = hasUrl(this.eve.content.body) ? this.highlightUrl(regExp) : this.eve.content.body;
+      // renderedText = renderedText.replace(/</g, '&lt;').replace(/>/g, '&gt;');
       return emojione.unicodeToImage(renderedText);
     },
     highlightUrl(regExp) {
@@ -77,12 +74,12 @@ export default {
         }
         return `<a href="${url}" target="_blank" class="message-url" style="color:#4285F4;cursor:pointer;word-break:break-all;text-decoration:underline">${match}</a>`;
       });
-    }
+    },
   },
   computed: {
     ...mapState(['showRoomList', 'windowHeight', 'windowWidth', 'userList', 'myinfo', 'hasOldTimelineTable']),
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
