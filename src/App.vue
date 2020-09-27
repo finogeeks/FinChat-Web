@@ -69,7 +69,6 @@ export default {
       const msgtype = mxEvent.event.content.msgtype; // 类型字段
       if (sender === userId) return; // 本人消息过滤
       const msgCanAlert = Object.keys(MSG_TYPE_ALERT).some(e => MSG_TYPE_ALERT[e] === msgtype);
-      debugger;
       if (!msgCanAlert) return;
       if (!isMute || (isMute && msgContent.msgtype === MSG_TYPE.alert && alertMe)) {
         if (Notification.permission !== 'default') {
