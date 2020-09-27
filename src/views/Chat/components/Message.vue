@@ -31,6 +31,13 @@
         :viewingRoom="viewingRoom"
         :key="eve.eventId"
         ></member-ship>
+    <system-message
+      :eve="eve"
+      :viewingRoom="viewingRoom"
+      :key="eve.eventId"
+      v-else-if="eve.type === Message.types.roomHistoryVisibility || eve.type === Message.types.topic"
+    ></system-message>
+    <!--  || (eve.type === Message.types.roomHistoryVisibility && eve.content.msgBody) -->
     <room-name
         v-else-if="eve.type === 'm.room.name'"
         :eve="eve"
@@ -96,10 +103,7 @@
 </template>
 
 <script lang="js">
-import IAM from '@/model/iam';
-import Matrix from '@/matrix';
-import emitter from '@/utils/event-emitter';
-import { cloneDeep } from 'lodash';
+import { Message } from '@finogeeks/finchat-model';
 import { mapState } from 'vuex';
 import VideoMessage from './VideoMessage';
 import AudioMessage from './AudioMessage';
@@ -115,8 +119,8 @@ import AlertMessage from './AlertMessage';
 import ArchiveMessage from './ArchiveMessage';
 import MobileCall from './MobileCall';
 import Encrypted from './Encrypted';
+import SystemMessage from './SystemMessage';
 import Unknow from './UnknowMessage';
-import { Message, Draft } from '@finogeeks/finchat-model';
 
 export default {
   name: 'Message',
@@ -136,6 +140,7 @@ export default {
     'archive-msg': ArchiveMessage,
     'mobile-call': MobileCall,
     'encrypted-msg': Encrypted,
+    'system-message': SystemMessage,
     'unknow-msg': Unknow,
   },
   data() {

@@ -212,7 +212,7 @@ export default {
     },
     getLastMsg(item, room) {
       if (!item) return '';
-      console.log(item.msgType);
+      // console.log(item.msgType);
       // let msg = {
       //   body: '',
       //   type: '',
