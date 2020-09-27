@@ -26,6 +26,7 @@ const MSG_TYPE_ALERT = {
     url: 'm.url',
     combineForward: 'm.combine_forward',
     cui: 'm.cui',
+    businesscard: 'm.businesscard'
 }
 const MSG_TYPE = {
     text: 'm.text',
@@ -37,6 +38,8 @@ const MSG_TYPE = {
     alert: 'm.alert',
     url: 'm.url',
     combineForward: 'm.combine_forward',
+    cui: 'm.cui',
+    businesscard: 'm.businesscard'
 }
 
 export {

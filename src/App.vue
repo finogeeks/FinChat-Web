@@ -84,7 +84,7 @@ export default {
         if (MSG_TYPE.video === msgtype) body = '[视频]';
         if (MSG_TYPE.audio === msgtype) body = '[语音]';
         if (MSG_TYPE.location === msgtype) body = '[位置]';
-        if (msgtype === 'm.combine_forward' || msgtype === 'm.url' || msgtype === 'm.url' || msgtype === 'm.businesscard') body = '[暂不支持展示该消息类型]';
+        if (msgtype === 'm.combine_forward' || msgtype === 'm.cui' || msgtype === 'm.url' || msgtype === 'm.businesscard') body = '[暂不支持展示该消息类型]';
         if (!newRoom.isDirect) {
           send = `${senderName} :`;
         }
