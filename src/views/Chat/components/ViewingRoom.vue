@@ -938,13 +938,9 @@ export default {
   computed: {
     ...mapState(['showRoomList', 'windowHeight', 'windowWidth', 'userList', 'myinfo', 'hasOldTimelineTable', 'chatRoom', 'roomListWidth', 'editorHeight', 'editorDraging']),
     roomList() {
-      // // console.log('VUEX STORE: roomList');
-      // // console.log(this.$store.state.roomList);
       return this.$store.state.roomList;
     },
     roomTimeLine() {
-      console.log('VUEX STORE: roomTimeLine');
-      console.log(this.$store.state.roomTimeLine);
       return this.$store.state.roomTimeLine[this.viewingRoomId] && this.$store.state.roomTimeLine[this.viewingRoomId].filter(e => !e.isRedacted);
     },
     viewingRoom() {

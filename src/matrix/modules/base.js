@@ -406,9 +406,6 @@ export default class BaseModule {
 
   // 房间timeline的消息实体
   buildTimelineMessage(messageEvent, mxRoom) {
-    if (mxRoom.roomId === '!134034672198877184:finogeeks.club') {
-      console.log('messageEvent', messageEvent);
-    }
     const clearEvent = messageEvent._clearEvent.content ? messageEvent._clearEvent : messageEvent.event;
     const sender = messageEvent.sender || mxRoom.getMember(messageEvent.event.sender) || {};
     const eventId = messageEvent.event.event_id;
