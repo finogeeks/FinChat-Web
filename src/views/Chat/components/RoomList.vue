@@ -170,7 +170,7 @@ export default {
       });
       const titles = document.getElementsByTagName('title');
       Array.prototype.filter.call(titles, (e) => {
-        e.innerHTML = signal ? WEB_NAME : `(${this.hasUnread})${WEB_NAME}`;
+        e.innerHTML = signal ? WEB_NAME : `${WEB_NAME}【${this.hasUnread}条新消息】`;
       });
     },
     async enterRoom(room) {
